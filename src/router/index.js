@@ -6,6 +6,7 @@ import Questions from '@/views/questions/Questions'
 import Articles from '@/views/articles/Articles'
 import User from '@/views/user/User'
 import Login from '@/views/Login.vue'
+import { getToken } from '@/utils/token'
 
 Vue.use(VueRouter)
 
@@ -18,10 +19,6 @@ const routes = [
     path: '/main',
     redirect: '/main/companies'
   },
-  // {
-  //   path: '/',
-  //   redirect: '/login'
-  // },
   {
     name: '登录',
     path: '/login',
@@ -77,6 +74,18 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/main/questions' || to.path === '/main/user') {
+    if (getToken()) {
+      next()
+    } else {
+      next('/login')
+    }
+  } else {
+    next()
+  }
 })
 
 export default router
